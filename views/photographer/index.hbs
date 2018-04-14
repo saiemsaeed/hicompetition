@@ -1,1 +1,9 @@
-<h1>Photographer Routes!</h1>
+{{> header}}
+
+<body>
+    <h1 class="display-4">User is logged In!</h1>
+    <form action="upload" method="POST" enctype="multipart/form-data">
+        <input type="file" class="form-control" name="file" multiple>
+        <button type="submit">Upload</button>
+    </form>
+</body>

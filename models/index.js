@@ -1,7 +1,9 @@
-const Mongoose = require('mongoose');
-Mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost:27017/photocalypse");
+const mongoose = require('mongoose');
 
-Mongoose.Promise = Promise;
+mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost:27017/photocalypse");
+
+mongoose.Promise = Promise;
 
 module.exports.User = require('./user');
 module.exports.Photographer = require('./photographer');
+module.exports.Photo = require('./photo');

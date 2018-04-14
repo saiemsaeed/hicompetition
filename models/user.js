@@ -1,6 +1,6 @@
 const mongoose = require('mongoose'),
     validator = require('validator'),
-    jwt = require('jsonwebtoken' ),
+    jwt = require('jsonwebtoken'),
     bCrypt = require('bcryptjs');
 
 let userSchema = new mongoose.Schema({
@@ -19,31 +19,38 @@ let userSchema = new mongoose.Schema({
         validate: {
             validator: (value) => validator.isEmail(value),
             message: "{VALUE} is not a valid email"
-        }    
+        }
     },
     password: {
         type: String,
         minlength: 6,
         required: "Password of user is required"
     },
-    avatar: {
+    phone: {
         type: String,
-        required: false,
-        default: '/images/avatar-default.png'
+        minlength: 1,
+        maxlength: 11,
+        required: "Phone Number is required to register user"
+    },
+    avatar: {
+        type: Buffer,
+        data: Buffer,
+        contentType: String,
+        default: ('./public/images/avatar-default.jpeg').toString('base64')
     },
     tokens: [{
         access: {
             type: String,
             required: true
         },
-        token:{
+        token: {
             type: String,
             required: true
         }
     }]
 });
 
-userSchema.methods.toJSON = function(){
+userSchema.methods.toJSON = function () {
     var user = this;
     var userObject = user.toObject();
 
@@ -51,27 +58,61 @@ userSchema.methods.toJSON = function(){
         _id: user._id,
         name: user.name,
         email: user.email,
+        avatar: user.avatar
     }
 }
 
-userSchema.methods.generateAuthToken = function(){
+userSchema.methods.removeToken = function(token){
+    var user = this;
+
+    return user.update({
+        $pull: {
+            tokens: {
+                token
+            }
+        }
+    })
+}
+
+userSchema.methods.generateAuthToken = function () {
     var user = this;
     var access = 'auth';
-    var token = jwt.sign({_id: user._id.toHexString(), access}, 'aabbcc').toString();
-    user.tokens = user.tokens.concat([{access, token}]);
+    var token = jwt.sign({ _id: user._id.toHexString(), access }, 'aabbcc').toString();
+    user.tokens = user.tokens.concat([{ access, token }]);
 
     return user.save().then(() => {
         return token;
     });
 }
 
-userSchema.statics.findByToken = function(token) {
+userSchema.statics.findByCredentials = function(email, password){
+    var User = this;
+    
+    return User.findOne({email})
+    .then((user) => {
+        if(!user){
+            return Promise.reject();
+        }
+
+        return new Promise((resolve, reject) => {
+            bCrypt.compare(password, user.password, (err, res) => {
+                if(res){
+                    resolve(user);
+                }else{
+                    reject(err);
+                }
+            })
+        })
+    })
+}
+
+userSchema.statics.findByToken = function (token) {
     let User = this;
     let decoded;
 
-    try{
+    try {
         decoded = jwt.verify(token, 'aabbcc');
-    }catch(e){
+    } catch (e) {
         return Promise.reject('Authentication Token is compromised!');
     }
 
@@ -82,16 +123,16 @@ userSchema.statics.findByToken = function(token) {
     })
 }
 
-userSchema.pre('save', function(next){
+userSchema.pre('save', function (next) {
     let user = this;
-    if(user.isModified('password')){
+    if (user.isModified('password')) {
         bCrypt.genSalt(10, (err, salt) => {
             bCrypt.hash(user.password, salt, (err, hash) => {
                 user.password = hash;
                 next();
             })
         })
-    }else{
+    } else {
         next();
     }
 })
