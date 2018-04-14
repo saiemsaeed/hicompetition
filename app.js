@@ -3,7 +3,8 @@ const experss = require('express'),
     PORT = process.env.PORT || 3000,
     bodyParser = require('body-parser'),
     hbs = require('hbs'),
-    userRoutes = require('./routes/user');
+    userRoutes = require('./routes/user'),
+    photographerRoutes = require('./routes/photographer');
 
 hbs.registerPartials(__dirname + '/views/user/partials/');
 
@@ -15,5 +16,6 @@ app.use(experss.static(__dirname + '/public/'));
 app.set('view engine', 'hbs');
 
 app.use('/', userRoutes);
+app.use('/photographer/', photographerRoutes);
 
 app.listen(PORT, () => console.log(`SERVER is listening to port ${PORT}`));
