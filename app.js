@@ -1,10 +1,19 @@
 const experss = require('express'),
     app = experss(),
-    PORT = process.env.PORT || 3000;
+    PORT = process.env.PORT || 3000,
+    bodyParser = require('body-parser'),
+    hbs = require('hbs'),
+    userRoutes = require('./routes/user');
 
+hbs.registerPartials(__dirname + '/views/user/partials/');
 
-app.get('/', (req, res) => {
-    res.send("Hello World!, Nascon`18 Gona Start!");
-});
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(experss.static(__dirname + '/views/'));
+app.use(experss.static(__dirname + '/public/'));
+
+app.set('view engine', 'hbs');
+
+app.use('/', userRoutes);
 
 app.listen(PORT, () => console.log(`SERVER is listening to port ${PORT}`));
