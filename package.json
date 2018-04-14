@@ -1,0 +1,25 @@
+{
+  "name": "hicompetition",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "dependencies": {
+    "express": "^4.16.3",
+    "mongoose": "^5.0.14"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "node app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/saiemsaeed/hicompetition.git"
+  },
+  "author": "Hileets",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/saiemsaeed/hicompetition/issues"
+  },
+  "homepage": "https://github.com/saiemsaeed/hicompetition#readme"
+}
