@@ -4,9 +4,13 @@ const express = require('express'),
     helper = require('../helpers/user');
     // auth = require('../middleware/auth');
 
-router.route('/')
+router.route('')
     .get(helper.main)
     .post(helper.signUp);
+
+router.route('/uploadAvatar')
+    .get(helper.uploadAvatar)
+    .post(helper.uploadAvatar);
 
 
 // router.route('/me')

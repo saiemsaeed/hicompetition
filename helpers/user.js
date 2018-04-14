@@ -13,8 +13,10 @@ exports.getUsers = (req, res) => {
 
 exports.signUp = (req, res) => {
     var body = {
+        name: req.body.name,
         email: req.body.email,
-        password: req.body.password
+        password: req.body.password,
+        phone: req.body.phone
     }
     
     let user = new db.User(body);
@@ -24,9 +26,14 @@ exports.signUp = (req, res) => {
     })
     .then((token) => {
         res.header('x-auth', token).send(user);
+        res.redirec('/uploadAvatar');
     }) 
     .catch(err => res.send(err))
 };
+
+exports.uploadAvatar = (req, res) => {
+    res.render('user/uploadAvatar');
+}
 
 exports.getMe = (req, res) => {
     res.send(req.user);

@@ -26,6 +26,11 @@ let userSchema = new mongoose.Schema({
         minlength: 6,
         required: "Password of user is required"
     },
+    avatar: {
+        type: String,
+        required: false,
+        default: '/images/avatar-default.png'
+    },
     tokens: [{
         access: {
             type: String,
